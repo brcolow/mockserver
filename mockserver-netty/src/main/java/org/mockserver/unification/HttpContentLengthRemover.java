@@ -1,6 +1,5 @@
 package org.mockserver.unification;
 
-import com.google.common.net.HttpHeaders;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
@@ -14,10 +13,12 @@ import java.util.List;
  */
 @ChannelHandler.Sharable
 public class HttpContentLengthRemover extends MessageToMessageEncoder<DefaultHttpMessage> {
+    private static final String CONTENT_LENGTH = "Content-Length";
+
     @Override
     protected void encode(ChannelHandlerContext ctx, DefaultHttpMessage defaultHttpMessage, List out) {
-        if (defaultHttpMessage.headers().contains(HttpHeaders.CONTENT_LENGTH, "", true)) {
-            defaultHttpMessage.headers().remove(HttpHeaders.CONTENT_LENGTH);
+        if (defaultHttpMessage.headers().contains(CONTENT_LENGTH, "", true)) {
+            defaultHttpMessage.headers().remove(CONTENT_LENGTH);
         }
         ReferenceCountUtil.retain(defaultHttpMessage);
         out.add(defaultHttpMessage);
